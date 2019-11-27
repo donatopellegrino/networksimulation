@@ -19,4 +19,7 @@ def build(bld):
                                   target='bin/project-bgpd',
                                   source=['project-bgpd.cc'],
                                   )
-
+    bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'netanim' ],
+                                  target='bin/readTopology',
+                                  source=['readTopology.cc'],
+                                  )
