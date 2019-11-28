@@ -106,16 +106,16 @@ int main(int argc, char * argv[]) {
 	quagga.BgpAddNeighbor(nodes.Get(1), "10.0.0.1", quagga.GetAsn(nodes.Get(0)));
 	quagga.BgpAddNeighbor(nodes.Get(1), "10.0.1.2", quagga.GetAsn(nodes.Get(2)));
 	quagga.BgpAddNeighbor(nodes.Get(2), "10.0.1.1", quagga.GetAsn(nodes.Get(1)));
-	quagga.BgpAddPeerLink(nodes.Get(0), "10.0.0.2");
+	/*quagga.BgpAddPeerLink(nodes.Get(0), "10.0.0.2");
 	quagga.BgpAddPeerLink(nodes.Get(1), "10.0.0.1");
 	quagga.BgpAddPeerLink(nodes.Get(1), "10.0.1.2");
-	quagga.BgpAddPeerLink(nodes.Get(2), "10.0.1.1");
+	quagga.BgpAddPeerLink(nodes.Get(2), "10.0.1.1");*/
 	quagga.Install(nodes);
 	NS_LOG_ERROR ("ciaoooooooooooooo"<< quagga.GetAsn(nodes.Get(2)));
 
 	
 	//pointToPoint.EnablePcapAll("project-bgpd");
-		
+	/*	
 	//uint32_t systemId = 0;
 	DceApplicationHelper dce;
 	ApplicationContainer apps;
@@ -135,7 +135,7 @@ int main(int argc, char * argv[]) {
 	apps = dce.Install(nodes.Get(2));
 	apps.Start(Seconds(15.0));
 	apps.Stop(Seconds(17.0));
-
+*/
 	DceApplicationHelper dce2;
 	ApplicationContainer apps2;
 
@@ -156,7 +156,8 @@ int main(int argc, char * argv[]) {
 	apps2.Stop(Seconds(17.0));
 
 
-
+	Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("routes.log", std::ios::out);
+  ipv4RoutingHelper.PrintRoutingTableAllEvery (Seconds (10), routingStream);
 
 
 	// if ( systemId == nodes.Get(2)->GetSystemId ())
