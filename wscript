@@ -15,7 +15,7 @@ def configure(conf):
 
 
 def build(bld):
-    bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'netanim' ],
+    bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'netanim', 'network', 'internet-apps', 'applications'],
                                   target='bin/project-bgpd',
                                   source=['project-bgpd.cc'],
                                   )
