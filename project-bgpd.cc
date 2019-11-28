@@ -38,7 +38,7 @@ NS_LOG_COMPONENT_DEFINE("DceQuaggaBgpd");
 
 // Parameters
 uint32_t nNodes = 3;
-uint32_t stopTime = 10000;
+uint32_t stopTime = 10;
 
 
 
@@ -76,6 +76,7 @@ int main(int argc, char * argv[]) {
 	nc[1].Add(nodes.Get(2));
 	ndc[1] = pointToPoint.Install(nc[1]);
 
+	
 
 
 
@@ -88,32 +89,33 @@ int main(int argc, char * argv[]) {
 
 	Ipv4AddressHelper ipv4AddrHelper;
 	ipv4AddrHelper.SetBase("10.0.0.0", "255.255.255.0");
-	Ipv4InterfaceContainer interfaces[2];
-	interfaces[0] = ipv4AddrHelper.Assign(ndc[0]);
+	Ipv4InterfaceContainer interfaces;
+	interfaces = ipv4AddrHelper.Assign(ndc[0]);
 	ipv4AddrHelper.NewNetwork();
-	interfaces[1] = ipv4AddrHelper.Assign(ndc[1]);
+	interfaces = ipv4AddrHelper.Assign(ndc[1]);
 	Ipv4GlobalRoutingHelper::PopulateRoutingTables();
 	
 	DceManagerHelper processManager;
 
 	processManager.SetNetworkStack("ns3::Ns3SocketFdFactory"); // required for pcap
 	processManager.Install(nodes);
+	
 	QuaggaHelper quagga;
 	quagga.EnableBgp(nodes);
-	quagga.BgpAddNeighbor(nc[0].Get(0), "10.0.0.2", quagga.GetAsn(nc[0].Get(1)));
-	quagga.BgpAddNeighbor(nc[0].Get(1), "10.0.0.1", quagga.GetAsn(nc[0].Get(0)));
-	quagga.BgpAddNeighbor(nc[1].Get(0), "10.0.1.2", quagga.GetAsn(nc[1].Get(1)));
-	quagga.BgpAddNeighbor(nc[1].Get(1), "10.0.1.1", quagga.GetAsn(nc[1].Get(0)));
-	//quagga.BgpAddPeerLink(nc[0].Get(0), "10.0.0.2");
-	//quagga.BgpAddPeerLink(nc[0].Get(1), "10.0.0.1");
-	//quagga.BgpAddPeerLink(nc[1].Get(0), "10.0.1.2");
-	//quagga.BgpAddPeerLink(nc[1].Get(1), "10.0.1.1");
-	//quagga.EnableZebraDebug(nodes);
+	quagga.BgpAddNeighbor(nodes.Get(0), "10.0.0.2", quagga.GetAsn(nodes.Get(1)));
+	quagga.BgpAddNeighbor(nodes.Get(1), "10.0.0.1", quagga.GetAsn(nodes.Get(0)));
+	quagga.BgpAddNeighbor(nodes.Get(1), "10.0.1.2", quagga.GetAsn(nodes.Get(2)));
+	quagga.BgpAddNeighbor(nodes.Get(2), "10.0.1.1", quagga.GetAsn(nodes.Get(1)));
+	quagga.BgpAddPeerLink(nodes.Get(0), "10.0.0.2");
+	quagga.BgpAddPeerLink(nodes.Get(1), "10.0.0.1");
+	quagga.BgpAddPeerLink(nodes.Get(1), "10.0.1.2");
+	quagga.BgpAddPeerLink(nodes.Get(2), "10.0.1.1");
 	quagga.Install(nodes);
+	NS_LOG_ERROR ("ciaoooooooooooooo"<< quagga.GetAsn(nodes.Get(2)));
 
-
-	pointToPoint.EnablePcapAll("project-bgpd");
 	
+	//pointToPoint.EnablePcapAll("project-bgpd");
+		
 	//uint32_t systemId = 0;
 	DceApplicationHelper dce;
 	ApplicationContainer apps;
@@ -128,10 +130,34 @@ int main(int argc, char * argv[]) {
 	dce.ResetEnvironment();
 	dce.AddArgument("-c 10");
 	dce.AddArgument("-s 1000");
-	dce.AddArgument("10.0.1.2");
+	dce.AddArgument("10.0.1.1");
 
-	apps = dce.Install(nodes.Get(0));
-	apps.Start(Seconds(5.0));
+	apps = dce.Install(nodes.Get(2));
+	apps.Start(Seconds(15.0));
+	apps.Stop(Seconds(17.0));
+
+	DceApplicationHelper dce2;
+	ApplicationContainer apps2;
+
+	dce2.SetStackSize(1 << 20);
+
+	// if ( systemId == nodes.Get(0)->GetSystemId () )
+	// {
+	// Launch ping on node 0
+	dce2.SetBinary("ping");
+	dce2.ResetArguments();
+	dce2.ResetEnvironment();
+	dce2.AddArgument("-c 10");
+	dce2.AddArgument("-s 1000");
+	dce2.AddArgument("10.0.0.1");
+
+	apps2 = dce2.Install(nodes.Get(2));
+	apps2.Start(Seconds(15.0));
+	apps2.Stop(Seconds(17.0));
+
+
+
+
 
 	// if ( systemId == nodes.Get(2)->GetSystemId ())
 	// {
@@ -150,7 +176,7 @@ int main(int argc, char * argv[]) {
 	//
 	// Now It's ready to GO!
 	//
-	Simulator::Stop(Seconds(stopTime));
+	Simulator::Stop(Seconds(50.0));
 	//AnimationInterface anim("myscripts/project/animation.xml");
 	//anim.SetConstantPosition(nodes.Get(0), 10.0, 10.0);
 	//anim.SetConstantPosition(nodes.Get(1), 30.0, 30.0);
