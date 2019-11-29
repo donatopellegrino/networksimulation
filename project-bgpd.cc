@@ -99,7 +99,25 @@ int main (int argc, char *argv[])
     processManager.SetNetworkStack ("ns3::Ns3SocketFdFactory");  // required for pcap
    
     processManager.Install (nodes);
-    
+   
+
+
+   DceApplicationHelper dce;
+  ApplicationContainer apps;
+
+  dce.SetStackSize (1 << 20);
+
+        // Launch ping on node 0
+      dce.SetBinary ("ping");
+      dce.ResetArguments ();
+      dce.ResetEnvironment ();
+      dce.AddArgument ("-c 10");
+      dce.AddArgument ("-s 1000");
+      dce.AddArgument ("10.0.0.10");
+
+      apps = dce.Install (nodes.Get(0));
+      apps.Start (Seconds (20.0));
+
 
     /*
      QuaggaHelper quagga;
@@ -110,13 +128,13 @@ int main (int argc, char *argv[])
      quagga.Install (nodes);
      */
     
-    ApplicationContainer apps;
+    //ApplicationContainer apps;
     
     // call the generation of the configuration function
-    apps.Add(GenerateConfigBgp(nodes.Get(0),1));
-    apps.Add(GenerateConfigBgp(nodes.Get(1),2));
-    apps.Add(GenerateConfigBgp(nodes.Get(2),3));
-    apps.Add(GenerateConfigBgp(nodes.Get(3),4));
+    GenerateConfigBgp(nodes.Get(0),1);
+    GenerateConfigBgp(nodes.Get(1),2);
+    GenerateConfigBgp(nodes.Get(2),3);
+    GenerateConfigBgp(nodes.Get(3),4);
 
 
     //RunIp (nodes.Get (0), Seconds (20.0), "bgp show");
@@ -241,8 +259,9 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, int configuration)
         "router bgp 1 \n"
         "   bgp router-id 10.0.0.2 \n"
         "   neighbor 10.0.0.1 remote-as 1 \n"
+	"   neighbor 10.0.0.6 remote-as 2 \n"
+	"   network 10.0.0.0 mask 255.255.255.252 \n"
 	"   neighbor 10.0.0.1 next-hop-self \n"
-        "   neighbor 10.0.0.6 remote-as 2 \n"
 	"! \n";
     }
     else if (configuration == 3){
@@ -257,6 +276,7 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, int configuration)
         "   bgp router-id 10.0.1.2 \n"
         "   neighbor 10.0.0.5 remote-as 1 \n"
 	"   neighbor 10.0.0.10 remote-as 2 \n"
+	"   network 10.0.0.8 mask 255.255.255.252 \n"
 	"   neighbor 10.0.0.10 next-hop-self \n"
 	"! \n";
     }
