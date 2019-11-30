@@ -19,4 +19,7 @@ def build(bld):
                                   target='bin/project-bgpd',
                                   source=['project-bgpd.cc'],
                                   )
+   bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'internet-apps', 'applications', 'topology-read'],
+                       target='bin/dce-quagga-ospfd-rocketfuel-remake',
+                       source=['dce-quagga-ospfd-rocketfuel-remake.cc'])
 
