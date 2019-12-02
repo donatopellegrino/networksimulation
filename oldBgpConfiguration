@@ -1,0 +1,60 @@
+if (configuration == 1)
+{
+    confi ="hostname bgpd \n"
+          "password zebra \n"
+          "log stdout \n"
+          "debug bgp \n"
+          "debug bgp fsm \n"
+          "debug bgp events \n"
+          "debug bgp updates \n"
+          "router bgp 1 \n"
+          "   bgp router-id 10.0.0.1 \n"
+          "   neighbor 10.0.0.2 remote-as 1\n"
+          "! \n";
+}
+else if (configuration == 2)
+{
+    confi = "hostname bgpd \n"
+"password zebra \n"
+"log stdout \n"
+"debug bgp \n"
+"debug bgp fsm \n"
+"debug bgp events \n"
+"debug bgp updates \n"
+    "router bgp 1 \n"
+    "   bgp router-id 10.0.0.2 \n"
+    "   neighbor 10.0.0.1 remote-as 1 \n"
+"   neighbor 10.0.0.6 remote-as 2 \n"
+"   network 10.0.0.0 mask 255.255.255.252 \n"
+"   neighbor 10.0.0.1 next-hop-self \n"
+"! \n";
+}
+else if (configuration == 3){
+    confi ="hostname bgpd \n"
+"password zebra \n"
+"log stdout \n"
+"debug bgp \n"
+"debug bgp fsm \n"
+"debug bgp events \n"
+"debug bgp updates \n"
+"router bgp 2 \n"
+"   bgp router-id 10.0.1.2 \n"
+"   neighbor 10.0.0.5 remote-as 1 \n"
+"   neighbor 10.0.0.10 remote-as 2 \n"
+"   network 10.0.0.8 mask 255.255.255.252 \n"
+"   neighbor 10.0.0.10 next-hop-self \n"
+"! \n";
+}
+else if (configuration == 4){
+    confi ="hostname bgpd \n"
+"password zebra \n"
+"log stdout \n"
+"debug bgp \n"
+"debug bgp fsm \n"
+"debug bgp events \n"
+"debug bgp updates \n"
+    "router bgp 2 \n"
+    "   bgp router-id 10.0.1.3 \n"
+    "   neighbor 10.0.0.9 remote-as 2 \n"
+"! \n";
+}
