@@ -116,13 +116,13 @@ int main (int argc, char *argv[])
       neighbors[nc[i].Get(0)->GetId()] += "   neighbor ";
       ipic[i].GetAddress(1,0).Print(temp);
       neighbors[nc[i].Get(0)->GetId()] += temp.str();
-      neighbors[nc[i].Get(0)->GetId()] += " remote-as 1\n";
+      neighbors[nc[i].Get(0)->GetId()] += " remote-as 1 \n";
       temp.str(""); // clear string stream
 
       neighbors[nc[i].Get(1)->GetId()] += "   neighbor ";
       ipic[i].GetAddress(0,0).Print(temp);
       neighbors[nc[i].Get(1)->GetId()] += temp.str();
-      neighbors[nc[i].Get(1)->GetId()] += " remote-as 1\n";
+      neighbors[nc[i].Get(1)->GetId()] += " remote-as 1 \n";
       temp.str(""); // clear string stream
     }
 
@@ -179,7 +179,7 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
   std::string zconfi;
   zconfi ="hostname zebra \n"
         "password zebra \n"
-        "log stdout\n"
+        "log stdout \n"
 	"debug zebra kernel \n"
 	"debug zebra events \n"
 	"debug zebra packet \n";
@@ -221,17 +221,17 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     //bgp_conf->Print (conf);
     // passing the different configurations according to the node passed
 
-    conf<<"hostname bgpd\n"
-          "password zebra\n"
-          "log stdout\n"
-          "debug bgp\n"
-          "debug bgp fsm\n"
-          "debug bgp events\n"
-          "debug bgp updates\n"
-          "router bgp 1\n"
-            "\tbgp router-id "<<id<<"\n"
-            <<configuration<<
-          "!\n";
+    conf<<"hostname bgpd \n"
+    "password zebra \n"
+    "log stdout \n"
+    "debug bgp \n"
+    "debug bgp fsm \n"
+    "debug bgp events \n"
+    "debug bgp updates \n"
+    "router bgp 1 \n"
+    "   bgp router-id 10.0.0."<<id<<" \n"
+    <<configuration<<
+    "! \n";
 
     //bgp_conf->Print (conf);
     conf.close ();
