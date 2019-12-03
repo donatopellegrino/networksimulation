@@ -224,7 +224,7 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     conf.open (conf_file.str ().c_str ());
     //bgp_conf->Print (conf);
     // passing the different configurations according to the node passed
-
+    if (id==0){
     conf<<"hostname bgpd \n"
     "password zebra \n"
     "log stdout \n"
@@ -234,8 +234,54 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     "debug bgp updates \n"
     "router bgp "<<id+1<<" \n"
     "   bgp router-id 10.0.0."<<id<<" \n"
+    "   network 20.0.0.0 mask 255.0.0.0 \n"
+    <<configuration<<
+    "! \n";}
+    else if(id==1){
+     conf<<"hostname bgpd \n"
+    "password zebra \n"
+    "log stdout \n"
+    "debug bgp \n"
+    "debug bgp fsm \n"
+    "debug bgp events \n"
+    "debug bgp updates \n"
+    "router bgp "<<id+1<<" \n"
+    "   bgp router-id 10.0.0."<<id<<" \n"
+"   network 30.0.0.0 mask 255.255.0.0 \n"
+
     <<configuration<<
     "! \n";
+    }
+    else if(id==2){
+     conf<<"hostname bgpd \n"
+    "password zebra \n"
+    "log stdout \n"
+    "debug bgp \n"
+    "debug bgp fsm \n"
+    "debug bgp events \n"
+    "debug bgp updates \n"
+    "router bgp "<<id+1<<" \n"
+    "   bgp router-id 10.0.0."<<id<<" \n"
+"   network 40.0.0.0 mask 255.255.255.0 \n"
+
+    <<configuration<<
+    "! \n";
+    }
+    else{
+     conf<<"hostname bgpd \n"
+    "password zebra \n"
+    "log stdout \n"
+    "debug bgp \n"
+    "debug bgp fsm \n"
+    "debug bgp events \n"
+    "debug bgp updates \n"
+    "router bgp "<<id+1<<" \n"
+    "   bgp router-id 10.0.0."<<id<<" \n"
+"   network 50.0.0.0 mask 255.255.255.220 \n"
+
+    <<configuration<<
+    "! \n";
+    }
 
     //bgp_conf->Print (conf);
     conf.close ();
