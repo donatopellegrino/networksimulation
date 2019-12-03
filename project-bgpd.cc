@@ -116,13 +116,17 @@ int main (int argc, char *argv[])
       neighbors[nc[i].Get(0)->GetId()] += "   neighbor ";
       ipic[i].GetAddress(1,0).Print(temp);
       neighbors[nc[i].Get(0)->GetId()] += temp.str();
-      neighbors[nc[i].Get(0)->GetId()] += " remote-as 1 \n";
+      neighbors[nc[i].Get(0)->GetId()] += " remote-as ";
+      neighbors[nc[i].Get(0)->GetId()] += std::to_string(i+2);
+      neighbors[nc[i].Get(0)->GetId()] += " \n";
       temp.str(""); // clear string stream
 
       neighbors[nc[i].Get(1)->GetId()] += "   neighbor ";
       ipic[i].GetAddress(0,0).Print(temp);
       neighbors[nc[i].Get(1)->GetId()] += temp.str();
-      neighbors[nc[i].Get(1)->GetId()] += " remote-as 1 \n";
+      neighbors[nc[i].Get(1)->GetId()] += " remote-as ";
+      neighbors[nc[i].Get(1)->GetId()] += std::to_string(i+1);
+      neighbors[nc[i].Get(1)->GetId()] += " \n";
       temp.str(""); // clear string stream
     }
 
@@ -228,7 +232,7 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     "debug bgp fsm \n"
     "debug bgp events \n"
     "debug bgp updates \n"
-    "router bgp 1 \n"
+    "router bgp "<<id+1<<" \n"
     "   bgp router-id 10.0.0."<<id<<" \n"
     <<configuration<<
     "! \n";
