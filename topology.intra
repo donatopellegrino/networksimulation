@@ -1,3 +1,5 @@
-Foggia Cerignola 0
-Cerignola Bitonto 1
-Bitonto Bari 0
+1;Bari 2;Foggia 1
+2;Foggia 2;Lucera 1
+2;Lucera 2;Cerignola 1
+2;Cerignola 3;Lecce 3
+3;Lecce 4;Taranto 1

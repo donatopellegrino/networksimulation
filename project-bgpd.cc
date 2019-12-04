@@ -16,7 +16,7 @@ NS_LOG_COMPONENT_DEFINE ("DceQuaggaBgpd");
 uint32_t stopTime = 10000;
 
 
-ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configuration, int id);
+ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configuration, int id, std::string ASn);
 int main (int argc, char *argv[])
 {
     std::string topoFile="myscripts/project/topology.intra";
@@ -73,9 +73,22 @@ int main (int argc, char *argv[])
     NodeContainer nc[totlinks];
     TopologyReader::ConstLinksIterator iter;
     int i = 0;
+    std::string nodeAS[nodes.GetN()];
+    uint32_t nodeCounter = 0;
     for ( iter = inFile->LinksBegin (); iter != inFile->LinksEnd (); iter++, i++ )
     {
       nc[i] = NodeContainer (iter->GetFromNode (), iter->GetToNode ());
+      if(iter->GetFromNode ()==nodes.Get(nodeCounter)){
+	nodeAS[nodeCounter] = iter->GetFromNodeName().substr(0, iter->GetFromNodeName().find(";"));
+        NS_LOG_INFO (nodeAS[nodeCounter]);
+	nodeCounter++;
+      }
+      if(iter->GetToNode ()==nodes.Get(nodeCounter)){
+	nodeAS[nodeCounter] = iter->GetToNodeName().substr(0, iter->GetToNodeName().find(";"));
+        NS_LOG_INFO (nodeAS[nodeCounter]);
+	nodeCounter++;
+      }
+
     }
 
     NS_LOG_INFO ("creating net device containers");
@@ -117,16 +130,32 @@ int main (int argc, char *argv[])
       ipic[i].GetAddress(1,0).Print(temp);
       neighbors[nc[i].Get(0)->GetId()] += temp.str();
       neighbors[nc[i].Get(0)->GetId()] += " remote-as ";
-      neighbors[nc[i].Get(0)->GetId()] += std::to_string(i+2);
+      neighbors[nc[i].Get(0)->GetId()] += nodeAS[nc[i].Get(1)->GetId()];
       neighbors[nc[i].Get(0)->GetId()] += " \n";
+
+      if(nodeAS[nc[i].Get(1)->GetId()]==nodeAS[nc[i].Get(0)->GetId()]){
+NS_LOG_INFO("iiiiiiiiiiiiiiiiiicalculating links types");
+
+      neighbors[nc[i].Get(0)->GetId()] += "   neighbor ";
+      neighbors[nc[i].Get(0)->GetId()] += temp.str();
+      neighbors[nc[i].Get(0)->GetId()] += " next-hop-self \n";
+      }
+
       temp.str(""); // clear string stream
 
       neighbors[nc[i].Get(1)->GetId()] += "   neighbor ";
       ipic[i].GetAddress(0,0).Print(temp);
       neighbors[nc[i].Get(1)->GetId()] += temp.str();
       neighbors[nc[i].Get(1)->GetId()] += " remote-as ";
-      neighbors[nc[i].Get(1)->GetId()] += std::to_string(i+1);
+      neighbors[nc[i].Get(1)->GetId()] += nodeAS[nc[i].Get(0)->GetId()];
       neighbors[nc[i].Get(1)->GetId()] += " \n";
+
+      if(nodeAS[nc[i].Get(1)->GetId()]==nodeAS[nc[i].Get(0)->GetId()]){
+      neighbors[nc[i].Get(1)->GetId()] += "   neighbor ";
+      neighbors[nc[i].Get(1)->GetId()] += temp.str();
+      neighbors[nc[i].Get(1)->GetId()] += " next-hop-self \n";
+      }
+
       temp.str(""); // clear string stream
     }
 
@@ -144,7 +173,7 @@ int main (int argc, char *argv[])
 
 
     for (int i = 0; i < nodes.GetN(); i++){
-      GenerateConfigBgp(nodes.Get(i),neighbors[i], i);
+      GenerateConfigBgp(nodes.Get(i),neighbors[i], i, nodeAS[i]);
     }
 
 
@@ -162,7 +191,7 @@ int main (int argc, char *argv[])
 
 
 //Generating Config of BGP
-ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configuration, int id)
+ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configuration, int id, std::string ASn)
 {
   DceApplicationHelper process;
   ApplicationContainer apps;
@@ -224,7 +253,6 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     conf.open (conf_file.str ().c_str ());
     //bgp_conf->Print (conf);
     // passing the different configurations according to the node passed
-    if (id==0){
     conf<<"hostname bgpd \n"
     "password zebra \n"
     "log stdout \n"
@@ -232,57 +260,13 @@ ApplicationContainer GenerateConfigBgp (Ptr<ns3::Node> node, std::string configu
     "debug bgp fsm \n"
     "debug bgp events \n"
     "debug bgp updates \n"
-    "router bgp "<<id+1<<" \n"
-    "   bgp router-id 10.0.0."<<id<<" \n"
-    "   network 20.0.0.0 mask 255.0.0.0 \n"
-    <<configuration<<
-    "! \n";}
-    else if(id==1){
-     conf<<"hostname bgpd \n"
-    "password zebra \n"
-    "log stdout \n"
-    "debug bgp \n"
-    "debug bgp fsm \n"
-    "debug bgp events \n"
-    "debug bgp updates \n"
-    "router bgp "<<id+1<<" \n"
-    "   bgp router-id 10.0.0."<<id<<" \n"
-"   network 30.0.0.0 mask 255.255.0.0 \n"
-
+    "router bgp "<<ASn<<" \n"
+    //"   bgp router-id 10.0.0."<<id<<" \n"
+    "   no synchronization \n"
+    "   bgp log-neighbor-changes \n"
+    "   network "<<id+2<<"0.0.0.0 mask 255.255.255.0 \n"
     <<configuration<<
     "! \n";
-    }
-    else if(id==2){
-     conf<<"hostname bgpd \n"
-    "password zebra \n"
-    "log stdout \n"
-    "debug bgp \n"
-    "debug bgp fsm \n"
-    "debug bgp events \n"
-    "debug bgp updates \n"
-    "router bgp "<<id+1<<" \n"
-    "   bgp router-id 10.0.0."<<id<<" \n"
-"   network 40.0.0.0 mask 255.255.255.0 \n"
-
-    <<configuration<<
-    "! \n";
-    }
-    else{
-     conf<<"hostname bgpd \n"
-    "password zebra \n"
-    "log stdout \n"
-    "debug bgp \n"
-    "debug bgp fsm \n"
-    "debug bgp events \n"
-    "debug bgp updates \n"
-    "router bgp "<<id+1<<" \n"
-    "   bgp router-id 10.0.0."<<id<<" \n"
-"   network 50.0.0.0 mask 255.255.255.220 \n"
-
-    <<configuration<<
-    "! \n";
-    }
-
     //bgp_conf->Print (conf);
     conf.close ();
 
