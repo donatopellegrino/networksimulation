@@ -27,3 +27,8 @@ def build(bld):
                        target='bin/network1',
                        source=['network1.cc'],
                                   )
+    bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'netanim', 'network', 'internet-apps', 'applications', 'topology-read'],
+                                  target='bin/perdonato',
+                                  source=['perdonato.cc'],
+                                  )
+

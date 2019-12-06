@@ -131,7 +131,7 @@ int main(int argc, char * argv[]) {
   std::stringstream temp;
 
 
-
+/*
 
   NodeContainer ASs[4];
   ASs[0].Add(nodes.Get(0));
@@ -141,7 +141,7 @@ int main(int argc, char * argv[]) {
   ASs[2].Add(nodes.Get(4));
   ASs[3].Add(nodes.Get(5));
 
-
+*/
 Ptr<VirtualNetDevice> m_n0Tap[nodes.GetN()];
 Ptr<Ipv4> ipv4;
 //int i;
@@ -154,107 +154,7 @@ Ptr<Ipv4> ipv4;
   
   //Ipv4InterfaceContainer intLoopback;
 
-  for (int i = 0; i < nodes.GetN()-1; i++) {
-    //NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"+std::string("200.10.10."+std::to_string(i)));
 
-    //std::strcpy("200.10.10"
-    //addressLoopback.SetBase(std::string("200.10.10."+std::to_string((i+1)*2)).c_str(), "255.255.255.255");
-/*
-    ndcLoopback[i] = csma.Install(nodes.Get(i));
-    addressLoopback.Assign(ndcLoopback[i]);
-    addressLoopback.NewNetwork();*/
-m_n0Tap[i] = CreateObject<VirtualNetDevice> ();
-NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-     m_n0Tap[i]->SetAddress (Mac48Address (std::string("11:00:01:02:03:0"+std::to_string(i+1)).c_str()));
-NS_LOG_INFO(std::string("10.10.10."+std::to_string((i*4)+1)).c_str());
-     nodes.Get(i)->AddDevice (m_n0Tap[i]);
-
-     ipv4 = nodes.Get(i)->GetObject<Ipv4> ();
-     uint32_t y = ipv4->AddInterface (m_n0Tap[i]);
-
-     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string((i*4)+1)).c_str()), Ipv4Mask ("255.255.255.255")));
-     ipv4->SetUp (y);
-
-
-    //ndLoopback[i] = m_deviceFactory.Create<LoopbackNetDevice> ();
-    //nodes.Get(i)->AddDevice(ndLoopback[i]);
-    //ndcLoopback[i].Add(ndLoopback[i]);
-    //addressLoopback.Assign(ndcLoopback[i]);
-    //address.NewNetwork();
-
-NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-    
-    for(int x = i+1; x < nodes.GetN(); x++) {
-      if(nodeAS[i] == nodeAS[x]){ 
-	neighbors[i] += "   neighbor ";
-	//ipic[i].GetAddress(1, 0).Print(temp);
-	neighbors[i] += "10.10.10.";
-        neighbors[i] += std::to_string((x*4)+1);
-	neighbors[i] += " remote-as ";
-	neighbors[i] += nodeAS[x];
-	neighbors[i] += " \n";
-	neighbors[i] += "   neighbor ";
-        neighbors[i] += "10.10.10.";
-        neighbors[i] += std::to_string((x*4)+1);
-	//neighbors[i] += temp.str();
-	neighbors[i] += " next-hop-self \n";
-
-        neighbors[i] += "   neighbor ";
-        neighbors[i] += "10.10.10.";
-        neighbors[i] += std::to_string((x*4)+1);
-	//neighbors[x] += temp.str();
-	neighbors[i] += " update-source ";
-        neighbors[i] += "10.10.10.";
-        neighbors[i] += std::to_string((i*4)+1);
-        neighbors[i] +=	" \n";
-
-        temp.str("");
-
-        neighbors[x] += "   neighbor ";
-	//ipic[i].GetAddress(1, 0).Print(temp);
-	neighbors[x] += "10.10.10.";
-        neighbors[x] += std::to_string((i*4)+1);
-	neighbors[x] += " remote-as ";
-	neighbors[x] += nodeAS[i];
-	neighbors[x] += " \n";
-	neighbors[x] += "   neighbor ";
-        neighbors[x] += "10.10.10.";
-        neighbors[x] += std::to_string((i*4)+1);
-	//neighbors[x] += temp.str();
-	neighbors[x] += " next-hop-self \n";
-
-        neighbors[x] += "   neighbor ";
-        neighbors[x] += "10.10.10.";
-        neighbors[x] += std::to_string((i*4)+1);
-	//neighbors[x] += temp.str();
-	neighbors[x] += " update-source ";
-        neighbors[x] += "10.10.10.";
-        neighbors[x] += std::to_string((x*4)+1);
-        neighbors[x] +=	" \n";
-
-        temp.str("");
-
-      }
-
-    }
-
-  }
-NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");/*
-  ndcLoopback[nodes.GetN()-1] = csma.Install(nodes.Get(nodes.GetN()-1));
-  addressLoopback.Assign(ndcLoopback[nodes.GetN()-1]);
-  addressLoopback.NewNetwork();*/
-
-
-m_n0Tap[nodes.GetN()-1] = CreateObject<VirtualNetDevice> ();
-
-m_n0Tap[nodes.GetN()-1]->SetAddress (Mac48Address (std::string("11:00:01:02:03:0"+std::to_string(nodes.GetN())).c_str()));
-     nodes.Get(nodes.GetN()-1)->AddDevice (m_n0Tap[nodes.GetN()-1]);
-     ipv4 = nodes.Get(nodes.GetN()-1)->GetObject<Ipv4> ();
-     uint32_t y = ipv4->AddInterface (m_n0Tap[nodes.GetN()-1]);
-     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string(((nodes.GetN()-1)*4)+1)).c_str()), Ipv4Mask ("255.255.255.255")));
-     ipv4->SetUp (y);
-
-NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 
 
   for (int i = 0; i < totlinks; i++) {
@@ -263,7 +163,6 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
     NS_LOG_INFO("\t" << ipic[i].GetAddress(0, 0));
     NS_LOG_INFO("device2: " << nc[i].Get(1) -> GetId());
     NS_LOG_INFO("\t" << ipic[i].GetAddress(1, 0));
-if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
 
     neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
     ipic[i].GetAddress(1, 0).Print(temp);
@@ -284,7 +183,22 @@ if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
 
    
     temp.str(""); // clear string stream
-}
+
+    if (nodeAS[nc[i].Get(1) -> GetId()] == nodeAS[nc[i].Get(0) -> GetId()]) {
+
+	neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " next-hop-self \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " next-hop-self \n";
+        temp.str("");
+    }
   }
 
   NS_LOG_INFO("commands:");
@@ -305,7 +219,7 @@ if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
   for (int i = 0; i < nodes.GetN(); i++) {
     GenerateConfigBgp(nodes.Get(i), neighbors[i], i, nodeAS[i]);
   }
-
+/*
 
 QuaggaHelper quagga;
   //for(i=0;i<4;i++){
@@ -317,7 +231,7 @@ quagga.EnableOspfDebug (ASs[1]);
       quagga.Install (ASs[1]);
   //}
 
-
+*/
   Ptr < OutputStreamWrapper > routingStream = Create < OutputStreamWrapper > ("routes.log", std::ios::out);
   ipv4RoutingHelper.PrintRoutingTableAllEvery(Seconds(20), routingStream);
 
