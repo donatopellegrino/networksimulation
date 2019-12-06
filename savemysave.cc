@@ -130,76 +130,117 @@ int main(int argc, char * argv[]) {
   std::string neighbors[nodes.GetN()];
   std::stringstream temp;
 
-
-/*
-
-  NodeContainer ASs[4];
-  ASs[0].Add(nodes.Get(0));
-  ASs[1].Add(nodes.Get(1));
-  ASs[1].Add(nodes.Get(2));
-  ASs[1].Add(nodes.Get(3));
-  ASs[2].Add(nodes.Get(4));
-  ASs[3].Add(nodes.Get(5));
-
-*/
-Ptr<VirtualNetDevice> m_n0Tap[nodes.GetN()];
-Ptr<Ipv4> ipv4;
-//int i;
-
-  CsmaHelper csma;
-  //NetDeviceContainer ndcLoopback[nodes.GetN()];
-  //Ptr<LoopbackNetDevice> ndLoopback[nodes.GetN()];
-  Ipv4AddressHelper addressLoopback;
-  addressLoopback.SetBase("10.10.10.0", "255.255.255.252");
-  
-  //Ipv4InterfaceContainer intLoopback;
+  std::string nodesInterfaces[nodes.GetN()];
 
 
 
 
+  int ASnumber=0;
   for (int i = 0; i < totlinks; i++) {
     NS_LOG_INFO(i);
     NS_LOG_INFO("device1: " << nc[i].Get(0) -> GetId());
     NS_LOG_INFO("\t" << ipic[i].GetAddress(0, 0));
     NS_LOG_INFO("device2: " << nc[i].Get(1) -> GetId());
     NS_LOG_INFO("\t" << ipic[i].GetAddress(1, 0));
+    if(std::stoi(nodeAS[nc[i].Get(0) -> GetId()])>ASnumber)
+      ASnumber=std::stoi(nodeAS[nc[i].Get(0) -> GetId()]);
+    if(std::stoi(nodeAS[nc[i].Get(1) -> GetId()])>ASnumber)
+      ASnumber=std::stoi(nodeAS[nc[i].Get(1) -> GetId()]);
 
-    neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
-    ipic[i].GetAddress(1, 0).Print(temp);
-    neighbors[nc[i].Get(0) -> GetId()] += temp.str();
-    neighbors[nc[i].Get(0) -> GetId()] += " remote-as ";
-    neighbors[nc[i].Get(0) -> GetId()] += nodeAS[nc[i].Get(1) -> GetId()];
-    neighbors[nc[i].Get(0) -> GetId()] += " \n";
+    if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
 
- 
-    temp.str(""); // clear string stream
+      neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+      ipic[i].GetAddress(1, 0).Print(temp);
+      neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+      neighbors[nc[i].Get(0) -> GetId()] += " remote-as ";
+      neighbors[nc[i].Get(0) -> GetId()] += nodeAS[nc[i].Get(1) -> GetId()];
+      neighbors[nc[i].Get(0) -> GetId()] += " \n";
 
-    neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
-    ipic[i].GetAddress(0, 0).Print(temp);
-    neighbors[nc[i].Get(1) -> GetId()] += temp.str();
-    neighbors[nc[i].Get(1) -> GetId()] += " remote-as ";
-    neighbors[nc[i].Get(1) -> GetId()] += nodeAS[nc[i].Get(0) -> GetId()];
-    neighbors[nc[i].Get(1) -> GetId()] += " \n";
+      neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+      neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+      neighbors[nc[i].Get(0) -> GetId()] += " advertisement-interval 5 \n";
+
+
 
    
-    temp.str(""); // clear string stream
+      temp.str(""); // clear string stream
 
-    if (nodeAS[nc[i].Get(1) -> GetId()] == nodeAS[nc[i].Get(0) -> GetId()]) {
+      neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+      ipic[i].GetAddress(0, 0).Print(temp);
+      neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+      neighbors[nc[i].Get(1) -> GetId()] += " remote-as ";
+      neighbors[nc[i].Get(1) -> GetId()] += nodeAS[nc[i].Get(0) -> GetId()];
+      neighbors[nc[i].Get(1) -> GetId()] += " \n";
 
-	neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
-        ipic[i].GetAddress(1, 0).Print(temp);
-        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
-	neighbors[nc[i].Get(0) -> GetId()] += " next-hop-self \n";
-        temp.str("");
+
+      neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+      neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+      neighbors[nc[i].Get(1) -> GetId()] += " advertisement-interval 5 \n";
+
+      
+
+     
+      temp.str(""); // clear string stream
+    }
+    else{
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += "   neighbor ";
+      ipic[i].GetAddress(0, 0).Print(temp);
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += " remote-as ";
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += nodeAS[nc[i].Get(0) -> GetId()];
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += " \n";
+
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += "   neighbor ";
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += " advertisement-interval 5 \n";
+
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += "   neighbor ";
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(0) -> GetId()] += " next-hop-self \n";
+
+      
 
 
-	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
-        ipic[i].GetAddress(0, 0).Print(temp);
-        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
-	neighbors[nc[i].Get(1) -> GetId()] += " next-hop-self \n";
-        temp.str("");
+
+     
+      temp.str(""); // clear string stream
+
+
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += "   neighbor ";
+      ipic[i].GetAddress(1, 0).Print(temp);
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += " remote-as ";
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += nodeAS[nc[i].Get(1) -> GetId()];
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += " \n";
+      
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += "   neighbor ";
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += " advertisement-interval 5 \n";
+
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += "   neighbor ";
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += temp.str();
+      nodesInterfaces[nc[i].Get(1) -> GetId()] += " next-hop-self \n";
+
+      
+
+
+       
+      temp.str(""); // clear string stream
+    }
+
+  }
+  NodeContainer ASnodes[ASnumber];
+  for (int x = 0; x < nodes.GetN()-1; x++) {
+    ASnodes[std::stoi(nodeAS[x])-1].Add(nodes.Get(x));
+    for (int y = x+1; y < nodes.GetN(); y++) {
+      if (nodeAS[x] == nodeAS[y]) {
+        neighbors[x]+=nodesInterfaces[y];
+        neighbors[y]+=nodesInterfaces[x];
+      }
     }
   }
+
+  
 
   NS_LOG_INFO("commands:");
   for (int i = 0; i < nodes.GetN(); i++) {
@@ -216,27 +257,24 @@ Ptr<Ipv4> ipv4;
 
   processManager.Install(nodes);
 
+  QuaggaHelper quagga;
+  quagga.EnableOspf (ASnodes[1], "10.0.0.0/8"); 
+  quagga.EnableOspfDebug (ASnodes[1]);
+  quagga.Install (ASnodes[1]);
+
+
   for (int i = 0; i < nodes.GetN(); i++) {
     GenerateConfigBgp(nodes.Get(i), neighbors[i], i, nodeAS[i]);
   }
-/*
 
-QuaggaHelper quagga;
-  //for(i=0;i<4;i++){
-//quagga.EnableOspf (ASs[1], "200.10.10.0/23");
-quagga.EnableOspf (ASs[1], "10.0.0.0/8");
 
-quagga.EnableOspfDebug (ASs[1]);
-      quagga.EnableZebraDebug (ASs[1]);
-      quagga.Install (ASs[1]);
-  //}
 
-*/
+
   Ptr < OutputStreamWrapper > routingStream = Create < OutputStreamWrapper > ("routes.log", std::ios::out);
   ipv4RoutingHelper.PrintRoutingTableAllEvery(Seconds(20), routingStream);
 
-NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-  Simulator::Stop(Seconds(200.0));
+  NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+  Simulator::Stop(Seconds(1000.0));
   Simulator::Run();
   Simulator::Destroy();
 
@@ -283,9 +321,9 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
   std::stringstream conf_dir, conf_file;
   // FIXME XXX
   conf_dir << "files-" << node -> GetId() << "";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
+  conf_dir << "/usr/";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
+  conf_dir << "/local/";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
   conf_dir << "/etc/";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
-  conf_dir << "/quagga/";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
-  //conf_dir << "/etc/";::mkdir(conf_dir.str().c_str(), S_IRWXU | S_IRWXG);
 
   conf_file << conf_dir.str() << "/bgpd.conf";
   //bgp_conf->SetFilename ("/usr/local/etc/bgpd.conf");
@@ -314,10 +352,10 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
   // setting the configuation
   process.ResetArguments();
   process.SetBinary("bgpd");
-  //process.AddArguments("-f", "/usr/local/etc/bgpd.conf");
-  //process.AddArguments("-i", "/usr/local/etc/bgpd.pid");
+  process.AddArguments("-f", "/usr/local/etc/bgpd.conf");
+  process.AddArguments("-i", "/usr/local/etc/bgpd.pid");
   apps = process.Install(node);
-  apps.Get(0) -> SetStartTime(Seconds(5.0 + 0.3 * node -> GetId()));
+  apps.Get(0) -> SetStartTime(Seconds(20.0 + 0.3 * node -> GetId()));
   //      apps.Get(0)->SetStartTime (Seconds (1.2 + 0.1 * node->GetId ()));
   node -> AddApplication(apps.Get(0));
 

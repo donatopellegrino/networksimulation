@@ -31,4 +31,8 @@ def build(bld):
                                   target='bin/perdonato',
                                   source=['perdonato.cc'],
                                   )
+    bld.build_a_script('dce', needed = ['core', 'internet', 'dce-quagga', 'point-to-point', 'netanim', 'network', 'internet-apps', 'applications', 'topology-read'],
+                                  target='bin/savemysave',
+                                  source=['savemysave.cc'],
+                                  )
 
