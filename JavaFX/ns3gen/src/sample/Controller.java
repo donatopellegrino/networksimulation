@@ -16,10 +16,11 @@ public class Controller {
     static int id = 1;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
-
+    List<Link> linkList = new ArrayList<>();
     List<Node> nodeList = new ArrayList<>();
     int nodeSelected = -1;
-
+    Node firstNode = null;
+    boolean linkMode = false;
     @FXML public TextField asTxtField;
     @FXML public Text infoField;
     @FXML public Pane mainPane;
@@ -29,46 +30,58 @@ public class Controller {
             Node node = new Node(id, Integer.parseInt(asTxtField.getText()));
             System.out.println(asTxtField.getText());
             EventHandler<MouseEvent> nodeOnMousePressedEventHandler =
-                    new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent t) {
-                            orgSceneX = t.getSceneX();
-                            orgSceneY = t.getSceneY();
-                            orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
-                            orgTranslateY = ((Circle)(t.getSource())).getTranslateY();
-                        }
+                    t -> {
+                        orgSceneX = t.getSceneX();
+                        orgSceneY = t.getSceneY();
+                        orgTranslateX = ((Circle)(t.getSource())).getTranslateX();
+                        orgTranslateY = ((Circle)(t.getSource())).getTranslateY();
                     };
 
             EventHandler<MouseEvent> nodeOnMouseDraggedEventHandler =
-                    new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent t) {
-                            double offsetX = t.getSceneX() - orgSceneX;
-                            double offsetY = t.getSceneY() - orgSceneY;
-                            double newTranslateX = orgTranslateX + offsetX;
-                            double newTranslateY = orgTranslateY + offsetY;
+                    t -> {
+                        double offsetX = t.getSceneX() - orgSceneX;
+                        double offsetY = t.getSceneY() - orgSceneY;
+                        double newTranslateX = orgTranslateX + offsetX;
+                        double newTranslateY = orgTranslateY + offsetY;
 
-                            ((Circle)(t.getSource())).setTranslateX(newTranslateX);
-                            ((Circle)(t.getSource())).setTranslateY(newTranslateY);
-                        }
+                        ((Circle)(t.getSource())).setTranslateX(newTranslateX);
+                        ((Circle)(t.getSource())).setTranslateY(newTranslateY);
+                        node.updatePos(newTranslateX,newTranslateY);
+                        updateLinks(node);
                     };
             EventHandler<MouseEvent> onItemClicked =
-                    new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent mouseEvent) {
+                    t -> {
+                        if (linkMode == true) {
+                            Node secondNode = node;
+                            infoField.setText("LINK CREATED BETWEEN: " + firstNode.ID + " " + secondNode.ID);
+
+                            Link link = new Link(firstNode, secondNode);
+                            linkList.add(link);
+                            //DEBUG
+                            for (int i=0; i < linkList.size(); i++) {
+                                Link temp = linkList.get(i);
+                                System.out.println(i + ": " + temp.firstNode.ID + " " + temp.secondNode.ID);
+                            }
+                            //END DEBUG
+                            mainPane.getChildren().add(link);
+                            firstNode.toggleSelection();
+                            nodeSelected = -1;
+                            firstNode = null;
+                            linkMode = false;
+                        }
+                        else {
                             node.toggleSelection();
                             if (nodeSelected == -1) {
                                 nodeSelected = node.ID;
                                 infoField.setText("Selected node ID: " + nodeSelected);
-                            }
-                            else
+                            } else
                                 for (int i = 0; i < nodeList.size(); i++) {
                                     if (nodeList.get(i).ID == nodeSelected) {
                                         nodeList.get(i).toggleSelection();
                                     }
                                 }
-                             nodeSelected = node.ID;
-                             infoField.setText("Selected node ID: " + nodeSelected);
+                            nodeSelected = node.ID;
+                            infoField.setText("Selected node ID: " + nodeSelected);
                         }
                     };
             node.setOnMousePressed(nodeOnMousePressedEventHandler);
@@ -79,6 +92,24 @@ public class Controller {
             id++;
         }
         catch (Exception e) {
+        }
+    }
+
+    private void updateLinks(Node node) {
+        Link temp;
+        for (int i = 0; i < linkList.size(); i++) {
+            temp = linkList.get(i);
+            if (temp.firstNode.ID == node.ID)
+            {
+                System.out.println("UPDATING FIRSTNODE");
+                temp.setStartX(node.xPos);
+                temp.setStartY(node.yPos);
+            }
+            else if (temp.secondNode.ID == node.ID) {
+                System.out.println("UPDATING SECONDNODE");
+                temp.setEndX(node.xPos);
+                temp.setEndY(node.yPos);
+            }
         }
     }
 
@@ -100,8 +131,20 @@ public class Controller {
 
     }
 
-    @FXML protected void addLink() {
-
+    @FXML protected void addLink() throws InterruptedException {
+        if (nodeSelected == -1) {
+            infoField.setText("Select a node first");
+        }
+        else
+        {
+            infoField.setText("Select second node");
+            for (int i = 0; i < nodeList.size(); i++) {
+                if (nodeList.get(i).ID == nodeSelected) {
+                    firstNode = nodeList.get(i);
+                }
+            }
+            linkMode = true;
+        }
     }
 
     @FXML protected void deleteLink() {

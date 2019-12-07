@@ -6,6 +6,8 @@ import javafx.scene.shape.Circle;
 public class Node extends Circle {
     int ID;
     int AS;
+    double xPos;
+    double yPos;
     boolean selected = false;
 
     Node(int id, int as) {
@@ -29,6 +31,8 @@ public class Node extends Circle {
             default: color = Color.GRAY;
         }
         this.setFill(color);
+        xPos = this.getCenterX();
+        yPos = this.getCenterY();
 
     }
 
@@ -41,5 +45,10 @@ public class Node extends Circle {
             this.setStroke(null);
             selected = false;
         }
+    }
+
+    public void updatePos(double newTranslateX, double newTranslateY) {
+        xPos = newTranslateX + 30;
+        yPos = newTranslateY + 30;
     }
 }
