@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class Link extends Line {
     Node firstNode;
