@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" fx:controller="sample.Controller" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="50.0" prefWidth="600.0" spacing="20.0">
+         <children>
+            <Button mnemonicParsing="false" text="Add Node" onAction="#addNewNode"/>
+            <TextField fx:id="asTxtField" prefHeight="25.0" prefWidth="80.0" promptText="AS Number" />
+            <Button mnemonicParsing="false" text="Delete Node" onAction="#deleteNode"/>
+            <Button mnemonicParsing="false" text="Add Link" onAction="#addLink"/>
+            <Button mnemonicParsing="false" text="Save Configuration" onAction="#saveConfig"/>
+            <Text fx:id="infoField" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="200" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets top="4.0" />
+               </HBox.margin>
+            </Text>
+         </children>
+         <padding>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+      <Pane prefHeight="560.0" prefWidth="600.0" style="-fx-background-color: cyan;" fx:id="mainPane"/>
+   </children>
+</VBox>
