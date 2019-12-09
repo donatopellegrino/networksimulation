@@ -10,6 +10,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,8 +142,14 @@ public class Controller {
     }
 
     @FXML
-    protected void saveConfig() {
-
+    protected void saveConfig() throws IOException {
+        Link out;
+        BufferedWriter output = new BufferedWriter(new FileWriter("topology.txt"));
+        for (int i= 0; i < linkList.size(); i++) {
+            out = linkList.get(i);
+            output.write(out.firstNode.AS + ";" + out.firstNode.ID + " " + out.secondNode.AS + ";" + out.secondNode.ID + " 1\n");
+        }
+        output.close();
     }
 
     @FXML

@@ -11,10 +11,6 @@ import java.util.List;
 
 public class Main extends Application {
 
-    List<Node> nodeList = new ArrayList<>();
-    public int nodeSelected = -1;
-    public int idcounter = 1;
-
 
     @Override
     public void start(Stage primaryStage) throws Exception{
