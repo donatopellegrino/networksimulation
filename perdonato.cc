@@ -181,8 +181,22 @@ Ptr<Ipv4> ipv4;
     neighbors[nc[i].Get(1) -> GetId()] += nodeAS[nc[i].Get(0) -> GetId()];
     neighbors[nc[i].Get(1) -> GetId()] += " \n";
 
-   
     temp.str(""); // clear string stream
+    
+    neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " advertisement-interval 5 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " advertisement-interval 5 \n";
+        temp.str("");
+
+   
 
     if (nodeAS[nc[i].Get(1) -> GetId()] == nodeAS[nc[i].Get(0) -> GetId()]) {
 
@@ -198,6 +212,87 @@ Ptr<Ipv4> ipv4;
         neighbors[nc[i].Get(1) -> GetId()] += temp.str();
 	neighbors[nc[i].Get(1) -> GetId()] += " next-hop-self \n";
         temp.str("");
+    }
+
+
+
+
+
+    //Cagate
+    if(i==0){
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " weight 3 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " weight 3 \n";
+        temp.str("");
+
+    }
+    else if(i==1){
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " weight 2 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " weight 2 \n";
+        temp.str("");
+
+    }
+    else if(i==2){
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " weight 3 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " weight 3 \n";
+        temp.str("");
+
+    }
+    else if(i==3){
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " weight 500 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " weight 500 \n";
+        temp.str("");
+
+    }
+    else{
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(1, 0).Print(temp);
+        neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(0) -> GetId()] += " weight 50 \n";
+        temp.str("");
+
+
+	neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+        ipic[i].GetAddress(0, 0).Print(temp);
+        neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+	neighbors[nc[i].Get(1) -> GetId()] += " weight 50 \n";
+        temp.str("");
+
     }
   }
 
@@ -236,7 +331,7 @@ quagga.EnableOspfDebug (ASs[1]);
   ipv4RoutingHelper.PrintRoutingTableAllEvery(Seconds(20), routingStream);
 
 NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-  Simulator::Stop(Seconds(200.0));
+  Simulator::Stop(Seconds(500.0));
   Simulator::Run();
   Simulator::Destroy();
 
@@ -298,7 +393,7 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
   "password zebra \n"
   "log stdout \n"
   "debug bgp \n"
-  "debug bgp fsm \n"
+  //"debug bgp fsm \n"
   "debug bgp events \n"
   "debug bgp updates \n"
   "router bgp " << ASn << " \n"

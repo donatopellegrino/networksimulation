@@ -1,4 +1,6 @@
-1;Bari 2;Foggia 1
-2;Foggia 2;Cerignola 1
-2;Cerignola 3;Lecce 3
-3;Lecce 4;Taranto 1
+1;a 2;b 1
+2;b 3;c 1
+3;c 4;d 1
+4;d 5;e 1
+5;e 1;a 1
+

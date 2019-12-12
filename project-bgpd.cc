@@ -18,11 +18,15 @@
 
 #include "ns3/virtual-net-device.h"
 
+ #include "ns3/ipv4-global-routing-helper.h"
+
 #include <stack>
 
 #include <string>
 
 #include <sstream>
+
+#include <cassert>
 
 using namespace ns3;
 NS_LOG_COMPONENT_DEFINE("DceQuaggaBgpd");
@@ -36,6 +40,7 @@ uint32_t stopTime = 10000;
 
 ApplicationContainer GenerateConfigBgp(Ptr < ns3::Node > node, std::string configuration, int id, std::string ASn);
 int main(int argc, char * argv[]) {
+     Config::SetDefault ("ns3::Ipv4GlobalRouting::RespondToInterfaceEvents", BooleanValue (true));
   std::string topoFile = "myscripts/project/topology.intra";
   std::ifstream file(topoFile);
   if (!file) {
@@ -132,21 +137,15 @@ int main(int argc, char * argv[]) {
 
 
 
+/*
 
-  NodeContainer ASs[4];
-  ASs[0].Add(nodes.Get(0));
-  ASs[1].Add(nodes.Get(1));
-  ASs[1].Add(nodes.Get(2));
-  ASs[1].Add(nodes.Get(3));
-  ASs[2].Add(nodes.Get(4));
-  ASs[3].Add(nodes.Get(5));
 
 
 Ptr<VirtualNetDevice> m_n0Tap[nodes.GetN()];
 Ptr<Ipv4> ipv4;
 //int i;
 
-  CsmaHelper csma;
+  CsmaHelper csma;*/
   //NetDeviceContainer ndcLoopback[nodes.GetN()];
   //Ptr<LoopbackNetDevice> ndLoopback[nodes.GetN()];
   Ipv4AddressHelper addressLoopback;
@@ -154,7 +153,7 @@ Ptr<Ipv4> ipv4;
   
   //Ipv4InterfaceContainer intLoopback;
 
-  for (int i = 0; i < nodes.GetN()-1; i++) {
+  //for (int i = 0; i < nodes.GetN()-1; i++) {
     //NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"+std::string("200.10.10."+std::to_string(i)));
 
     //std::strcpy("200.10.10"
@@ -162,7 +161,7 @@ Ptr<Ipv4> ipv4;
 /*
     ndcLoopback[i] = csma.Install(nodes.Get(i));
     addressLoopback.Assign(ndcLoopback[i]);
-    addressLoopback.NewNetwork();*/
+    addressLoopback.NewNetwork();*//*
 m_n0Tap[i] = CreateObject<VirtualNetDevice> ();
 NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
      m_n0Tap[i]->SetAddress (Mac48Address (std::string("11:00:01:02:03:0"+std::to_string(i+1)).c_str()));
@@ -172,7 +171,7 @@ NS_LOG_INFO(std::string("10.10.10."+std::to_string((i*4)+1)).c_str());
      ipv4 = nodes.Get(i)->GetObject<Ipv4> ();
      uint32_t y = ipv4->AddInterface (m_n0Tap[i]);
 
-     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string((i*4)+1)).c_str()), Ipv4Mask ("255.255.255.255")));
+     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string((i*4)+1)).c_str()), Ipv4Mask ("255.255.255.252")));
      ipv4->SetUp (y);
 
 
@@ -214,7 +213,7 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 	//ipic[i].GetAddress(1, 0).Print(temp);
 	neighbors[x] += "10.10.10.";
         neighbors[x] += std::to_string((i*4)+1);
-	neighbors[x] += " remote-as ";
+	neighbors[x] += " remote-as ";  
 	neighbors[x] += nodeAS[i];
 	neighbors[x] += " \n";
 	neighbors[x] += "   neighbor ";
@@ -238,12 +237,12 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 
     }
 
-  }
+  }*/
 NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");/*
   ndcLoopback[nodes.GetN()-1] = csma.Install(nodes.Get(nodes.GetN()-1));
   addressLoopback.Assign(ndcLoopback[nodes.GetN()-1]);
   addressLoopback.NewNetwork();*/
-
+/*
 
 m_n0Tap[nodes.GetN()-1] = CreateObject<VirtualNetDevice> ();
 
@@ -251,8 +250,8 @@ m_n0Tap[nodes.GetN()-1]->SetAddress (Mac48Address (std::string("11:00:01:02:03:0
      nodes.Get(nodes.GetN()-1)->AddDevice (m_n0Tap[nodes.GetN()-1]);
      ipv4 = nodes.Get(nodes.GetN()-1)->GetObject<Ipv4> ();
      uint32_t y = ipv4->AddInterface (m_n0Tap[nodes.GetN()-1]);
-     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string(((nodes.GetN()-1)*4)+1)).c_str()), Ipv4Mask ("255.255.255.255")));
-     ipv4->SetUp (y);
+     ipv4->AddAddress (y, Ipv4InterfaceAddress (Ipv4Address (std::string("10.10.10."+std::to_string(((nodes.GetN()-1)*4)+1)).c_str()), Ipv4Mask ("255.255.255.252")));
+     ipv4->SetUp (y);*/
 
 NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
 
@@ -263,7 +262,7 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
     NS_LOG_INFO("\t" << ipic[i].GetAddress(0, 0));
     NS_LOG_INFO("device2: " << nc[i].Get(1) -> GetId());
     NS_LOG_INFO("\t" << ipic[i].GetAddress(1, 0));
-if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
+//if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
 
     neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
     ipic[i].GetAddress(1, 0).Print(temp);
@@ -284,6 +283,26 @@ if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
 
    
     temp.str(""); // clear string stream
+//}
+if (nodeAS[nc[i].Get(1) -> GetId()] == nodeAS[nc[i].Get(0) -> GetId()]) {
+neighbors[nc[i].Get(0) -> GetId()] += "   neighbor ";
+    ipic[i].GetAddress(1, 0).Print(temp);
+    neighbors[nc[i].Get(0) -> GetId()] += temp.str();
+    neighbors[nc[i].Get(0) -> GetId()] += " next-hop-self ";
+    neighbors[nc[i].Get(0) -> GetId()] += " \n";
+
+ 
+    temp.str(""); // clear string stream
+
+    neighbors[nc[i].Get(1) -> GetId()] += "   neighbor ";
+    ipic[i].GetAddress(0, 0).Print(temp);
+    neighbors[nc[i].Get(1) -> GetId()] += temp.str();
+    neighbors[nc[i].Get(1) -> GetId()] += " next-hop-self ";
+    neighbors[nc[i].Get(1) -> GetId()] += " \n";
+
+   
+    temp.str(""); // clear string stream
+
 }
   }
 
@@ -306,16 +325,23 @@ if (nodeAS[nc[i].Get(1) -> GetId()] != nodeAS[nc[i].Get(0) -> GetId()]) {
     GenerateConfigBgp(nodes.Get(i), neighbors[i], i, nodeAS[i]);
   }
 
-
+/*
 QuaggaHelper quagga;
   //for(i=0;i<4;i++){
 //quagga.EnableOspf (ASs[1], "200.10.10.0/23");
-quagga.EnableOspf (ASs[1], "10.0.0.0/8");
+quagga.EnableOspf (ASs[1], "10.0.0.0/16");
 
 quagga.EnableOspfDebug (ASs[1]);
       quagga.EnableZebraDebug (ASs[1]);
       quagga.Install (ASs[1]);
-  //}
+  //}*/
+Ptr<Node> n1 = nodes.Get (3);
+   Ptr<Ipv4> ipv41 = n1->GetObject<Ipv4> ();
+Ptr<Node> n2 = nodes.Get (4);
+   Ptr<Ipv4> ipv42 = n2->GetObject<Ipv4> ();
+
+   Simulator::Schedule (Seconds (1),&Ipv4::SetDown, ipv41, 2);
+   Simulator::Schedule (Seconds (1),&Ipv4::SetDown, ipv42, 1);
 
 
   Ptr < OutputStreamWrapper > routingStream = Create < OutputStreamWrapper > ("routes.log", std::ios::out);
@@ -361,7 +387,7 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
   process.AddArguments("-i", "/usr/local/etc/zebra.pid");
   process.SetStackSize(1 << 16);
   apps.Add(process.Install(node));
-  apps.Get(0) -> SetStartTime(Seconds(1.0 + 0.01 * node -> GetId()));
+  apps.Get(0) -> SetStartTime(Seconds(15.0 + 0.01 * node -> GetId()));
   node -> AddApplication(apps.Get(0));
   //Ptr<BgpConfig> bgp_conf = node->GetObject<BgpConfig> ();
 
@@ -403,7 +429,7 @@ NS_LOG_INFO("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
   process.AddArguments("-f", "/usr/local/etc/bgpd.conf");
   process.AddArguments("-i", "/usr/local/etc/bgpd.pid");
   apps = process.Install(node);
-  apps.Get(0) -> SetStartTime(Seconds(5.0 + 0.3 * node -> GetId()));
+  apps.Get(0) -> SetStartTime(Seconds(20.0 + 0.3 * node -> GetId()));
   //      apps.Get(0)->SetStartTime (Seconds (1.2 + 0.1 * node->GetId ()));
   node -> AddApplication(apps.Get(0));
 
