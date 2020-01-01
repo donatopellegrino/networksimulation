@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "bgp_fsm.h": "c",
-        "workqueue.h": "c"
-    }
-}
